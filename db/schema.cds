@@ -1,6 +1,7 @@
 namespace incidentmanagement;
 
 using { cuid, managed } from '@sap/cds/common';
+using { Attachments } from '@cap-js/attachments';
 
 // Status enumeration for incidents
 type Status : String enum {
@@ -37,4 +38,6 @@ entity Incidents : cuid, managed {
   resolutionNotes    : String(1000);
   // Conversation log
   messages           : Composition of many Messages on messages.incident = $self;
+  // Attachments support
+  attachments        : Composition of many Attachments;
 }
