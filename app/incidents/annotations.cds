@@ -1,23 +1,32 @@
 using IncidentService as service from '../../srv/incident-service';
 
 // Add value help annotation for Business Partner field
-annotate service.Incidents with @(
-    Common.ValueList #BusinessPartner : {
-        $Type : 'Common.ValueListType',
-        CollectionPath : 'BusinessPartner',
-        Parameters : [
-            {
-                $Type : 'Common.ValueListParameterInOut',
-                LocalDataProperty : businessPartner,
-                ValueListProperty : 'BusinessPartner',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'BusinessPartnerFullName',
-            },
-        ],
-    }
-);
+annotate service.Incidents with {
+    businessPartner @(
+        Common.ValueList : {
+            $Type : 'Common.ValueListType',
+            CollectionPath : 'BusinessPartner',
+            Label : 'Business Partners',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : businessPartner,
+                    ValueListProperty : 'BusinessPartner',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'BusinessPartnerFullName',
+                },
+                {
+                    $Type : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'BusinessPartnerCategory',
+                }
+            ]
+        },
+        Common.ValueListWithFixedValues : false,
+        Common.Text : { $value : businessPartnerName, @UI.TextArrangement : #TextOnly }
+    )
+};
 
 annotate service.Incidents with @(
     UI.FieldGroup #GeneratedGroup : {

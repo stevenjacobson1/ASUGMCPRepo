@@ -7,7 +7,8 @@ service IncidentService @(path: '/incidents') {
   @odata.draft.enabled
   entity Incidents as projection on im.Incidents {
     *,
-    virtual null as urgencyCriticality : Integer
+    virtual null as urgencyCriticality : Integer,
+    virtual null as businessPartnerName : String
   };
   
   // Messages entity for conversation log
