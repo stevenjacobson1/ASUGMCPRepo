@@ -1,0 +1,138 @@
+<mvc:View
+	controllerName="com.sap.incidents.analytics.controller.Main"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:viz="sap.viz.ui5.controls"
+	xmlns:vizData="sap.viz.ui5.data"
+	xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	core:require="{
+		formatter: 'com/sap/incidents/analytics/model/formatter'
+	}">
+
+	<f:DynamicPage id="page">
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:heading>
+					<Title text="Incident Analytics Dashboard"/>
+				</f:heading>
+			</f:DynamicPageTitle>
+		</f:title>
+		<f:header>
+			<f:DynamicPageHeader>
+				<f:content>
+					<Text text="Analytical view of incidents with status distribution visualization"/>
+				</f:content>
+			</f:DynamicPageHeader>
+		</f:header>
+		<f:content>
+			<VBox class="sapUiMediumMargin">
+				<!-- Header with summary information -->
+				<Panel headerText="Incident Summary" class="sapUiResponsiveMargin">
+					<content>
+						<HBox class="sapUiMediumMargin">
+							<VBox class="sapUiMediumMarginEnd">
+								<Label text="Total Incidents:" class="sapUiTinyMarginBottom"/>
+								<ObjectNumber id="totalIncidents" number="0" emphasized="true"/>
+							</VBox>
+							<VBox class="sapUiMediumMarginEnd">
+								<Label text="New Incidents:" class="sapUiTinyMarginBottom"/>
+								<ObjectNumber id="newIncidents" number="0" state="Error"/>
+							</VBox>
+							<VBox class="sapUiMediumMarginEnd">
+								<Label text="In Progress:" class="sapUiTinyMarginBottom"/>
+								<ObjectNumber id="inProgressIncidents" number="0" state="Warning"/>
+							</VBox>
+							<VBox class="sapUiMediumMarginEnd">
+								<Label text="Resolved:" class="sapUiTinyMarginBottom"/>
+								<ObjectNumber id="resolvedIncidents" number="0" state="Success"/>
+							</VBox>
+						</HBox>
+					</content>
+				</Panel>
+
+				<!-- Pie Chart Panel -->
+				<Panel headerText="Incidents by Status Distribution" class="sapUiResponsiveMargin">
+					<content>
+						<VBox alignItems="Center" class="sapUiMediumMargin">
+							<viz:VizFrame
+								id="idPieChart"
+								vizType="donut"
+								width="100%"
+								height="400px">
+								<viz:dataset>
+									<vizData:FlattenedDataset 
+										id="datasetPie"
+										data="{view>/StatusData}">
+										<vizData:DimensionDefinition
+											name="Status"
+											value="{status}"/>
+										<vizData:MeasureDefinition
+											name="Count"
+											value="{count}"/>
+									</vizData:FlattenedDataset>
+								</viz:dataset>
+								<viz:feeds>
+									<vizFeeds:FeedItem
+										uid="size"
+										type="Measure"
+										values="Count"/>
+									<vizFeeds:FeedItem
+										uid="color"
+										type="Dimension"
+										values="Status"/>
+								</viz:feeds>
+							</viz:VizFrame>
+						</VBox>
+					</content>
+				</Panel>
+
+				<!-- Detailed Table -->
+				<Panel headerText="Incident Details" class="sapUiResponsiveMargin">
+					<content>
+						<Table 
+							id="incidentTable"
+							items="{/Incidents}"
+							mode="SingleSelect"
+							class="sapUiResponsiveMargin">
+							<columns>
+								<Column width="15em">
+									<Text text="Title"/>
+								</Column>
+								<Column width="8em">
+									<Text text="Status"/>
+								</Column>
+								<Column width="8em">
+									<Text text="Urgency"/>
+								</Column>
+								<Column width="10em">
+									<Text text="Assigned To"/>
+								</Column>
+								<Column width="12em">
+									<Text text="Created At"/>
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{title}"/>
+										<ObjectStatus 
+											text="{status}"
+											state="{path: 'status', formatter: 'formatter.formatStatusState'}"/>
+										<ObjectStatus 
+											text="{urgency}"
+											state="{path: 'urgency', formatter: 'formatter.formatUrgencyState'}"/>
+										<Text text="{assignedTo}"/>
+										<Text text="{path: 'createdAt', formatter: 'formatter.formatDate'}"/>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</content>
+				</Panel>
+			</VBox>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>
