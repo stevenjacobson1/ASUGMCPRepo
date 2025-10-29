@@ -1,7 +1,13 @@
 const cds = require('@sap/cds');
+const { businessPartnerSampleData } = require('./sample-business-partner-data');
 
 module.exports = cds.service.impl(async function() {
     const { Incidents } = this.entities;
+
+    // Business Partner value help handler
+    this.on('READ', 'BusinessPartner', async (req) => {
+        return businessPartnerSampleData;
+    });
 
     // Add criticality mapping for urgency field
     this.after('READ', 'Incidents', (data) => {
